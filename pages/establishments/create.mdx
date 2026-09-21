@@ -1,0 +1,32 @@
+---
+title: 'Cadastrar loja'
+openapi: "POST /v1/establishment"
+---
+
+Cadastra uma loja na rede do parceiro identificado automaticamente pelo token de acesso.
+
+## Modelos de desembolso
+
+O modelo de desembolso define quem recebe o valor das vendas da loja.
+
+| Valor | Modelo | Quem recebe |
+| --- | --- | --- |
+| `1` | **Rede** | A conta bancária da rede recebe o desembolso de todas as lojas. |
+| `2` | **Loja** | A conta bancária da própria loja recebe. |
+| `3` | **Externo** | Uma conta de terceiro recebe. Exige `nomeTitular` e `documentoTitular` na conta bancária. |
+
+<Note>
+  A conta bancária é obrigatória no cadastro mesmo quando o desembolso é da rede (`1`) — ela fica registrada na loja para uso futuro.
+</Note>
+
+## Endereço
+
+O endereço é opcional aqui. Se você ainda não tem o endereço no momento do cadastro, envie depois em [Editar loja](/pages/establishments/update).
+
+## Resposta
+
+A resposta traz `estabelecimentoId`. Guarde esse valor — é ele que identifica a loja nos demais endpoints.
+
+<Warning>
+  O CNPJ e a razão social precisam ser únicos entre todas as lojas. Reenviar um CNPJ ou uma razão social já cadastrados retorna `409`.
+</Warning>

@@ -1,0 +1,16 @@
+---
+title: 'Alterar conta bancária da loja'
+openapi: "PUT /v1/establishment/{estabelecimentoId}/bank-account"
+---
+
+Cadastra ou atualiza a conta bancária da loja.
+
+A conta é substituída por inteiro a cada chamada — envie todos os campos, não apenas os alterados.
+
+<Note>
+  Quando o modelo de desembolso da loja é externo (`3`), `nomeTitular` e `documentoTitular` são obrigatórios.
+</Note>
+
+<Warning>
+  Uma loja inativa não aceita alteração da conta bancária. Reative a loja antes, em [Ativar ou inativar loja](/pages/establishments/status).
+</Warning>

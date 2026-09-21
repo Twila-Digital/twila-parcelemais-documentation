@@ -102,6 +102,26 @@
         ]
       },
       {
+        "tab": "Loja",
+        "groups": [
+          {
+            "group": "Visão geral",
+            "pages": ["pages/establishments"]
+          },
+          {
+            "group": "Loja",
+            "pages": [
+              "pages/establishments/create",
+              "pages/establishments/list",
+              "pages/establishments/get",
+              "pages/establishments/update",
+              "pages/establishments/bank-account",
+              "pages/establishments/status"
+            ]
+          }
+        ]
+      },
+      {
         "tab": "Webhooks",
         "groups": [
           {
