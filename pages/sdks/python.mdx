@@ -58,6 +58,7 @@ O client expõe um objeto por recurso:
 | `client.orders` | `create`, `get`, `list`, `start_cdc_sale`, `import_invoice` |
 | `client.simulations` | `simulate_installments`, `simulate_values` |
 | `client.customers` | `get`, `list` |
+| `client.establishments` | `create`, `get`, `list`, `update`, `update_bank_account`, `activate`, `deactivate` |
 | `client.webhooks` | `create`, `list`, `update`, `delete` |
 
 `orders.list(...)` e `customers.list(...)` retornam um `PagedResult[T]` — sem auto-paginação, você controla explicitamente o avanço de página.
