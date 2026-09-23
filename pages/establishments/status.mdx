@@ -1,0 +1,15 @@
+---
+title: 'Ativar ou inativar loja'
+openapi: "PUT /v1/establishment/{estabelecimentoId}/status"
+---
+
+Altera a situação da loja do parceiro identificado automaticamente pelo token de acesso.
+
+| Valor | Situação | Efeito |
+| --- | --- | --- |
+| `false` | **Inativa** | A loja não aceita novos pedidos nem edição. Pedidos já em andamento seguem normalmente. |
+| `true` | **Ativa** | A loja volta a aceitar pedidos e edição imediatamente. |
+
+<Note>
+  Lojas inativas continuam aparecendo em [Listar lojas](/pages/establishments/list) — é de lá que você recupera o `estabelecimentoId` para reativar.
+</Note>

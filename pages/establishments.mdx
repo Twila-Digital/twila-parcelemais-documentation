@@ -1,0 +1,50 @@
+---
+title: 'Lojas'
+description: 'Cadastre e gerencie as lojas do seu parceiro'
+icon: 'store'
+---
+
+A loja é o estabelecimento que origina os pedidos. Todo pedido é criado no contexto de uma loja, identificada pelo CNPJ em `documentoEstabelecimento`.
+
+<Card title="Gerenciamento pela API" icon="gear" horizontal color="#25c2a0">
+  As lojas podem ser cadastradas, consultadas, editadas e ativadas ou inativadas diretamente pela API de integração.
+</Card>
+
+## <Icon icon="sitemap" type="solid"/> Rede e lojas
+
+<Card title="A rede define as condições comerciais" icon="building" horizontal>
+  As lojas de um parceiro pertencem a uma **rede**, que concentra taxas, prazos e modelo de juros válidos para todas elas.
+
+  A rede não é criada nem editada pela API — ela é configurada pelo time da Parcele+ no onboarding, junto com a primeira loja. A partir daí, você cadastra as demais lojas pela API.
+</Card>
+
+<Note>
+  A rede é identificada automaticamente pelo token de acesso. Você só enxerga e altera lojas da sua própria rede — um identificador de outra rede retorna `404`.
+</Note>
+
+## <Icon icon="toggle-on" type="solid"/> Situação da loja
+
+<CardGroup cols={2}>
+  <Card title="Ativa" icon="circle-check" color="#4caf50">
+    Aceita novos pedidos e pode ser editada.
+  </Card>
+
+  <Card title="Inativa" icon="circle-pause" color="#9e9e9e">
+    Não aceita novos pedidos nem edição. Pedidos já em andamento seguem normalmente até o fim.
+  </Card>
+</CardGroup>
+
+<Card title="Inativar é reversível" icon="rotate-left" horizontal color="#25c2a0">
+  Envie `ativa: true` no endpoint de situação para reativar. Lojas inativas continuam aparecendo na listagem, então você sempre recupera o identificador de uma loja que inativou.
+</Card>
+
+## <Icon icon="fingerprint" type="solid"/> Identificador da loja
+
+<Card title="Dois identificadores, usos diferentes" icon="id-card" horizontal>
+  - `estabelecimentoId` — devolvido no cadastro. Identifica a loja nos endpoints de consulta, edição, conta bancária e situação.
+  - **CNPJ** — é o que você envia em `documentoEstabelecimento` ao criar um pedido.
+</Card>
+
+<Warning>
+  Guarde o `estabelecimentoId` retornado no cadastro. Se perder, recupere pela listagem de lojas.
+</Warning>

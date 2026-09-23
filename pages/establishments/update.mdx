@@ -1,0 +1,26 @@
+---
+title: 'Editar loja'
+openapi: "PUT /v1/establishment/{estabelecimentoId}"
+---
+
+Atualiza os dados cadastrais da loja do parceiro identificado automaticamente pelo token de acesso.
+
+## Campos editáveis
+
+| Campo | Comportamento |
+| --- | --- |
+| `nomeFantasia` | **Obrigatório** — enviado em toda chamada. |
+| `modeloDesembolso` | **Opcional** — quando omitido, mantém o modelo atual. |
+| `endereco` | **Opcional** — quando omitido, mantém o endereço atual. Envie o endereço inteiro, não apenas os campos alterados. |
+
+<Note>
+  A razão social e o CNPJ são definidos no cadastro e não podem ser alterados. A conta bancária tem endpoint próprio, em [Alterar conta bancária da loja](/pages/establishments/bank-account).
+</Note>
+
+<Note>
+  Para mudar o desembolso para a própria loja (`2`), a loja precisa ter conta bancária cadastrada. Cadastre a conta antes, em [Alterar conta bancária da loja](/pages/establishments/bank-account).
+</Note>
+
+<Warning>
+  Uma loja inativa não aceita edição. Reative a loja antes, em [Ativar ou inativar loja](/pages/establishments/status).
+</Warning>
