@@ -21,7 +21,14 @@ O modelo de desembolso define quem recebe o valor das vendas da loja.
 
 ## Endereço
 
-O endereço é opcional aqui. Se você ainda não tem o endereço no momento do cadastro, envie depois em [Editar loja](/pages/establishments/update).
+O endereço é obrigatório no cadastro. Todos os campos são obrigatórios, exceto:
+
+| Campo | Comportamento |
+| --- | --- |
+| `complemento` | Opcional. |
+| `pais` | Opcional. Quando omitido, assume Brasil. |
+
+Enviar a loja sem `endereco`, ou com algum campo obrigatório vazio, retorna `400`.
 
 ## Resposta
 
