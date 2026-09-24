@@ -138,7 +138,8 @@
               "pages/webhooks/create",
               "pages/webhooks/list",
               "pages/webhooks/update",
-              "pages/webhooks/delete"
+              "pages/webhooks/delete",
+              "pages/webhooks/audit"
             ]
           }
         ]

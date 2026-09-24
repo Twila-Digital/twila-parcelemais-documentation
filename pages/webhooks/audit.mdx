@@ -1,0 +1,12 @@
+---
+title: 'Listar auditoria de webhooks'
+openapi: "GET /v1/webhooks/auditoria"
+---
+
+Retorna o histórico de envios de webhook feitos para o seu endpoint: uma linha por tentativa, com a requisição enviada, a resposta recebida e o status HTTP.
+
+<Note>
+  Cada tentativa de envio gera um registro, mesmo quando seu endpoint responde com erro ou está fora do ar. Use o filtro `statusCode` para localizar envios que falharam.
+</Note>
+
+Consulte os valores possíveis de `tipo` em [Listar webhooks](/pages/webhooks/list).

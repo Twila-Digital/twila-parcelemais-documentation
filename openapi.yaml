@@ -730,6 +730,103 @@ paths:
           description: Parceiro ou webhook não encontrado.
         "500":
           description: Internal Server Error
+  /v1/webhooks/auditoria:
+    get:
+      operationId: pagedAuditWebHooks
+      tags:
+        - Webhook
+      summary: Listar auditoria de webhooks.
+      description: Retorna, de forma paginada, os envios de webhook feitos ao parceiro identificado pelo token de acesso, com a requisição enviada, a resposta recebida e o status HTTP. Ordenado do mais recente para o mais antigo.
+      parameters:
+        - name: dataInicio
+          in: query
+          description: Data de início do filtro no formato ISO-8601. Campo opcional.
+          schema:
+            type: string
+            format: date-time
+            example: "2025-01-01T00:00:00-03:00"
+          example: "2025-01-01T00:00:00-03:00"
+        - name: dataFim
+          in: query
+          description: Data de fim do filtro no formato ISO-8601. Campo opcional.
+          schema:
+            type: string
+            format: date-time
+            example: "2025-12-31T23:59:59-03:00"
+          example: "2025-12-31T23:59:59-03:00"
+        - name: pedidoId
+          in: query
+          description: Identificador do pedido. Campo opcional.
+          schema:
+            type: string
+            format: uuid
+            example: "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+          example: "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+        - name: numeroPedido
+          in: query
+          description: Número do pedido. Campo opcional.
+          schema:
+            type: integer
+            format: int64
+            example: 1001
+          example: 1001
+        - name: statusCode
+          in: query
+          description: Status HTTP retornado pelo webhook do parceiro. Campo opcional.
+          schema:
+            type: integer
+            format: int32
+            minimum: 100
+            maximum: 599
+            example: 200
+          example: 200
+        - name: pagina
+          in: query
+          description: "Número da página. Padrão: 1."
+          schema:
+            type: integer
+            format: int32
+            example: 1
+          example: 1
+        - name: tamanhoPagina
+          in: query
+          description: "Quantidade de itens por página. Padrão: 10."
+          schema:
+            type: integer
+            format: int32
+            example: 10
+          example: 10
+      responses:
+        "200":
+          description: Auditoria retornada com sucesso.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Core.Domain.Primitives.IPagedResult_AuditWebHookIntegrationResponse"
+              example:
+                itens:
+                  - id: "3c90c3cc-0d44-4b50-8888-8dd25736052a"
+                    tipo: 3
+                    requisicao: "{\"id_pedido\":\"3c90c3cc-0d44-4b50-8888-8dd25736052a\",\"enum_status\":2,\"status\":\"Approved\"}"
+                    resposta: "{\"message\":\"ok\"}"
+                    statusCode: 200
+                    dataCriacao: "2025-01-15T10:30:00-03:00"
+                pagina:
+                  tem_proximo: false
+                  tem_anterior: false
+                  numero: 1
+                  tamanho: 10
+                  total: 1
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Microsoft.AspNetCore.Mvc.ProblemDetails"
+        "404":
+          description: Parceiro não encontrado.
+        "500":
+          description: Internal Server Error
   /v1/establishment:
     post:
       operationId: createEstablishment
@@ -739,7 +836,7 @@ paths:
       description: |
         Cadastra uma loja na rede do parceiro identificado automaticamente pelo token de acesso e vincula a loja ao parceiro.
 
-        O endereço é opcional no cadastro — você pode enviá-lo depois em `PUT /v1/establishment/{estabelecimentoId}/address`.
+        O endereço é obrigatório no cadastro. Todos os campos do endereço são obrigatórios, exceto `complemento` e `pais` (quando omitido, assume Brasil).
       requestBody:
         required: true
         content:
@@ -1164,7 +1261,7 @@ components:
           description: País da loja. Quando omitido, assume Brasil.
       additionalProperties: false
     CreateEstablishmentRequest:
-      required: [documento, razaoSocial, nomeFantasia, modeloDesembolso, responsavel, contaBancaria]
+      required: [documento, razaoSocial, nomeFantasia, modeloDesembolso, responsavel, contaBancaria, endereco]
       type: object
       properties:
         documento:
@@ -1450,6 +1547,17 @@ components:
         escopo:
           type: string
       additionalProperties: false
+    Core.Domain.Primitives.IPagedResult_AuditWebHookIntegrationResponse:
+      type: object
+      properties:
+        itens:
+          type: array
+          items:
+            $ref: "#/components/schemas/Integration.Shared.Responses.WebHook.AuditWebHookIntegrationResponse"
+          readOnly: true
+        pagina:
+          $ref: "#/components/schemas/Core.Domain.Primitives.Pagina"
+      additionalProperties: false
     Core.Domain.Primitives.IPagedResult_CustomerIntegrationResponse:
       type: object
       properties:
@@ -1606,6 +1714,31 @@ components:
           type: number
           format: double
           nullable: true
+      additionalProperties: false
+    Integration.Shared.Responses.WebHook.AuditWebHookIntegrationResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        tipo:
+          type: integer
+          format: int32
+          enum: [1, 2, 3]
+          description: "1: Cliente (fluxo em roadmap); 2: Simulação (fluxo em roadmap); 3: Pedido (envio disponível)."
+        requisicao:
+          type: string
+          description: Corpo da requisição enviada ao seu endpoint, como texto.
+        resposta:
+          type: string
+          description: Corpo da resposta recebida do seu endpoint, como texto.
+        statusCode:
+          type: integer
+          format: int32
+          description: Status HTTP retornado pelo seu endpoint.
+        dataCriacao:
+          type: string
+          format: date-time
       additionalProperties: false
     Microsoft.AspNetCore.Mvc.ProblemDetails:
       type: object
