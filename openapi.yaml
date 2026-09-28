@@ -1198,20 +1198,26 @@ components:
       properties:
         banco:
           type: string
-          description: Código do banco.
+          pattern: "^\\d{3}$"
+          description: Código do banco. Deve conter exatamente 3 dígitos.
           example: "341"
         agencia:
           type: string
-          description: Número da agência, sem dígito.
+          pattern: "^\\d{1,4}$"
+          description: Número da agência, sem dígito. Deve conter de 1 a 4 dígitos.
         digitoAgencia:
           type: string
-          description: Dígito da agência. Envie vazio quando a agência não tiver dígito.
+          pattern: "^(\\d|X)?$"
+          description: Dígito da agência. Envie vazio quando a agência não tiver dígito. Quando informado, deve ser um único dígito ou a letra X.
         conta:
           type: string
-          description: Número da conta, sem dígito.
+          minLength: 4
+          maxLength: 11
+          description: Número da conta, sem dígito. Deve conter de 4 a 11 caracteres.
         digitoConta:
           type: string
-          description: Dígito da conta.
+          pattern: "^(\\d|X)$"
+          description: Dígito da conta. Deve ser um único dígito ou a letra X.
         tipoConta:
           type: integer
           format: int32
@@ -1220,11 +1226,13 @@ components:
         nomeTitular:
           type: string
           nullable: true
+          minLength: 2
+          maxLength: 250
           description: Nome do titular da conta. Obrigatório quando o modelo de desembolso é externo (`3`).
         documentoTitular:
           type: string
           nullable: true
-          description: CPF ou CNPJ do titular da conta. Obrigatório quando o modelo de desembolso é externo (`3`).
+          description: CPF ou CNPJ válido do titular da conta. Aceita com ou sem máscara (ex. `123.456.789-01` ou `12345678000195`). Obrigatório quando o modelo de desembolso é externo (`3`).
       additionalProperties: false
     EstablishmentAddressRequest:
       required: [rua, numero, bairro, cidade, estado, cep]
