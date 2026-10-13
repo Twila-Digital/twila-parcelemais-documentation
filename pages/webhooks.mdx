@@ -159,4 +159,26 @@ Os valores abaixo são os status que podem ser enviados no campo `enum_status` d
   <Card title="19 - Disbursed" icon="money-bill-transfer" color="#4caf50" horizontal>
     O valor do pedido foi desembolsado.
   </Card>
+
+  <Card title="20 - PendingInvoice" icon="file-invoice" color="#ff9800" horizontal>
+    Nota fiscal pendente. A nota fiscal está inválida e liberada para reenvio.
+  </Card>
 </CardGroup>
+
+### Nota fiscal pendente
+
+Você recebe a notificação `PendingInvoice` quando a nota fiscal do pedido é invalidada e liberada para reenvio. O webhook de Pedido (`tipo: 3`) envia o seguinte payload:
+
+```json
+{
+  "id_pedido": "00000000-0000-0000-0000-000000000000",
+  "enum_status": 20,
+  "status": "PendingInvoice"
+}
+```
+
+Esse status representa uma condição temporária da nota fiscal. Ele não altera o status real do pedido. Você recebe essa notificação quando a nota fiscal está inválida e não está marcada como importada.
+
+Nas consultas de pedidos, a mesma condição aparece como `status.valor: 20` e `status.descricao: "Nota fiscal pendente"`. Você pode localizar esses pedidos com `status=20` em [Listar pedidos](/pages/orders/paged).
+
+Reenvie o arquivo corrigido por [Importar nota fiscal](/pages/orders/import-invoice), com o mesmo `pedidoId`. Quando o reenvio marca a nota fiscal como importada, as consultas voltam a apresentar o status real do pedido. Isso não significa que a nota fiscal já foi validada.

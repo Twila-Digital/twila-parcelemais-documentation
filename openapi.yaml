@@ -236,7 +236,12 @@ paths:
       tags:
         - Pedido
       summary: Importar nota fiscal.
-      description: Importa a nota fiscal de um pedido CDC a partir de um arquivo em base64.
+      description: |
+        Você importa a nota fiscal de um pedido CDC a partir de um arquivo em base64.
+
+        Se o pedido apresentar o status `20` (`PendingInvoice`, nota fiscal pendente), você pode reenviar a nota fiscal por este endpoint. Use o mesmo `pedidoId` e envie o arquivo corrigido.
+
+        Após o reenvio, quando a nota fiscal estiver marcada como importada, as consultas de pedidos voltam a apresentar o status real do pedido. Isso não significa que a nota fiscal já foi validada.
       parameters:
         - $ref: "#/components/parameters/IdempotencyKey"
         - $ref: "#/components/parameters/CorrelationId"
@@ -307,7 +312,12 @@ paths:
       tags:
         - Pedido
       summary: Obter pedido.
-      description: Retorna os detalhes de um pedido pelo identificador.
+      description: |
+        Você consulta os detalhes de um pedido pelo identificador.
+
+        Quando a nota fiscal está inválida e liberada para reenvio, a resposta apresenta `status.valor: 20` e `status.descricao: "Nota fiscal pendente"` (`PendingInvoice`). Esse status é temporário e não altera o status real do pedido.
+
+        Após o reenvio da nota fiscal, quando ela estiver marcada como importada, a resposta volta a apresentar o status real do pedido. Para reenviar, use [Importar nota fiscal](/pages/orders/import-invoice).
       parameters:
         - name: pedidoId
           in: path
@@ -363,15 +373,19 @@ paths:
       tags:
         - Pedido
       summary: Listar pedidos.
-      description: Retorna uma lista paginada de pedidos do parceiro com filtros opcionais.
+      description: |
+        Você consulta uma lista paginada de pedidos do parceiro com filtros opcionais.
+
+        Pedidos com nota fiscal inválida e liberada para reenvio apresentam `status.valor: 20` e `status.descricao: "Nota fiscal pendente"` (`PendingInvoice`). Após o reenvio, quando a nota fiscal estiver marcada como importada, as consultas voltam a apresentar o status real do pedido.
       parameters:
         - name: status
           in: query
           description: |
-            Filtrar por status do pedido. Campo opcional.
+            Você filtra por status do pedido. Campo opcional.
+
+            Use `status=20` para retornar somente pedidos com nota fiscal inválida e liberada para reenvio. Pedidos sem nota fiscal ou com nota já reenviada não atendem a esse filtro.
 
             Valores possíveis:
-            - 0 - Indefinido
             - 1 - Em análise
             - 2 - Aprovado
             - 3 - Saldo indisponível
@@ -390,6 +404,7 @@ paths:
             - 16 - Concluído
             - 17 - Congelado
             - 18 - Confirmação de pagamento pendente
+            - 20 - Nota fiscal pendente (`PendingInvoice`)
           schema:
             type: integer
             format: int32
@@ -1665,13 +1680,19 @@ components:
     Integration.Shared.Responses.Order.OrderStatus:
       type: object
       description: |
-        Status do pedido. Consulte os valores enviados em [Webhooks → Status enviados pelo webhook](/pages/webhooks#status-enviados-pelo-webhook).
+        Status apresentado nas consultas de pedidos. Consulte os valores enviados em [Webhooks → Status enviados pelo webhook](/pages/webhooks#status-enviados-pelo-webhook).
+
+        O código `20` (`PendingInvoice`) indica que a nota fiscal está inválida e liberada para reenvio. É um status temporário de apresentação e não altera o status real do pedido.
+
+        Após o reenvio, quando a nota fiscal estiver marcada como importada, as consultas voltam a apresentar o status real do pedido.
       properties:
         valor:
           type: integer
           format: int32
+          description: Código do status. O valor `20` representa nota fiscal pendente (`PendingInvoice`).
         descricao:
           type: string
+          description: Descrição do status. Para o código `20`, você recebe `Nota fiscal pendente`.
       additionalProperties: false
     Integration.Shared.Responses.Order.OrderIntegrationResponse:
       type: object
